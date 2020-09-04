@@ -64,9 +64,12 @@
 <div class="container">
   <div class="text-muted">
     <small>
-      Submitted by: {{ job.info_by }}
       <br />
-      Remarks: {{ job.remarks }}
+      Submitted by: {{ job.info_by }}
+      <hr />
+      <b>Remarks:</b>
+      <br />
+      {{ job.remarks|linebreaksbr }}
     </small>
   </div>
 </div>
