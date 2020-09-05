@@ -1,7 +1,10 @@
+from datetime import datetime as dt
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
-from jobs.choices import *
+from jobs.choices import JOB_TYPES, PLATFORM_CHOICES
 
 
 class Job(models.Model):
@@ -16,9 +19,26 @@ class Job(models.Model):
     job_type = models.CharField(max_length=2, choices=JOB_TYPES)
     desc_url = models.URLField(verbose_name="Description URL")
     appln_url = models.URLField(verbose_name="Application URL")
-    deadline = models.DateField()
+    deadline = models.DateField(null=True, blank=True, verbose_name="Deadline (if any)")
+    job_open = models.BooleanField(
+        default=True, blank=True, verbose_name="Is this job open?"
+    )
     platform = models.CharField(max_length=4, choices=PLATFORM_CHOICES)
     remarks = models.TextField(default="No Remarks")
+
+    @property
+    def is_job_open(self):
+        if self.deadline:
+            date_today = dt.today().date()
+            return self.deadline >= date_today
+        else:
+            return self.job_open
+
+    def clean(self):
+        if self.deadline is None and self.job_open is None:
+            raise ValidationError("Has to have a open/closed status")
+        if self.deadline:
+            self.job_open = self.is_job_open
 
     def save(self, *args, **kwargs):
         if not self.info_by:
@@ -29,4 +49,4 @@ class Job(models.Model):
         return f"{self.company_name}: {self.position_name}"
 
     class Meta:
-        ordering = ["deadline"]
+        ordering = ["deadline", "company_name", "position_name"]
