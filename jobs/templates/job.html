@@ -5,7 +5,21 @@
 <div class="container">
   <h1>{{ job.company_name }}</h1>
   <h1>{{ job.position_name}} ({{ job.get_job_type_display }})</h1>
-  <h2>Deadline: <i>{{ job.deadline }}</i></h2>
+  <h2>
+    Deadline:
+    <i>
+      <!-- prettier-ignore -->
+      {% if job.deadline %}
+      {{ job.deadline }}
+      {% else %}
+      {% if job.is_job_open %}
+      Open (No Deadline)
+      {% else %}
+      Expired
+      {% endif %}
+      {% endif %}
+    </i>
+  </h2>
 </div>
 
 <div class="container">

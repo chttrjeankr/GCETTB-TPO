@@ -38,7 +38,10 @@
           <a href="{% url 'detail' job.pk %}">
             {{ job }}
           </a>
+          <!-- prettier-ignore -->
+          {% if job.deadline %}
           till {{ job.deadline }}
+          {% endif %}
         </li>
         {% endfor %}
       </ol>
@@ -70,7 +73,10 @@
         {% for job in expired_jobs %}
         <li style="list-style: none;">
           <a href="{% url 'detail' job.pk %}">{{ job }}</a>
+          <!-- prettier-ignore -->
+          {% if job.deadline %}
           at {{ job.deadline }}
+          {% endif %}
         </li>
         {% endfor %}
       </ol>
